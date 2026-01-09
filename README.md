@@ -491,5 +491,3 @@ MIT License - See [LICENSE](LICENSE)
 ---
 
 Built for AI-assisted development.
-
-**Author**: [@na-ive](https://github.com/na-ive)
