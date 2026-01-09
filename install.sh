@@ -127,7 +127,6 @@ setup_knowledge_base() {
         echo "  [2] Sync from remote"
         echo "  [3] Replace with new repo"
         echo ""
-        # FIX: Force read from tty
         read -p "Choice [1-3]: " choice < /dev/tty
         
         case $choice in
@@ -141,7 +140,6 @@ setup_knowledge_base() {
                 ;;
             3)
                 log_warn "This will DELETE existing rules!"
-                # FIX: Force read from tty
                 read -p "Type 'yes' to confirm: " confirm < /dev/tty
                 [[ "$confirm" != "yes" ]] && return
                 rm -rf "$CACHE_DIR"
@@ -166,7 +164,6 @@ clone_repo() {
     echo "  For private rules:"
     echo "     Paste your private repo URL"
     echo ""
-    # FIX: Force read from tty
     read -p "Repo URL: " user_input < /dev/tty
     
     local repo_url="${user_input:-$DEFAULT_STARTER_REPO}"
@@ -227,6 +224,10 @@ generate_utils_module() {
     cat << 'EOFUTILS' > "$LIB_DIR/utils.sh"
 #!/bin/bash
 # utils.sh - Helper functions
+
+# Prevent double sourcing
+if [ -n "${UTILS_LOADED:-}" ]; then return; fi
+readonly UTILS_LOADED=true
 
 # Color codes
 readonly C_GREEN='\033[0;32m'
@@ -300,7 +301,7 @@ generate_ui_module() {
 #!/bin/bash
 # ui.sh - CLI UI components
 
-source "$LIB_DIR/utils.sh"
+# Source removed - already loaded by main executable
 
 # Show header
 show_header() {
@@ -388,7 +389,7 @@ generate_detect_module() {
 #!/bin/bash
 # detect.sh - Project detection
 
-source "$LIB_DIR/utils.sh"
+# Source removed - already loaded by main executable
 
 detect_package_manager() {
     if [ -f "pnpm-lock.yaml" ]; then echo "pnpm"
@@ -516,7 +517,7 @@ generate_context_module() {
 #!/bin/bash
 # context.sh - Context assembly
 
-source "$LIB_DIR/utils.sh"
+# Source removed - already loaded by main executable
 
 TETHER_LIB="${XDG_CACHE_HOME:-$HOME/.cache}/tether"
 
@@ -629,8 +630,7 @@ generate_git_module() {
 #!/bin/bash
 # git.sh - Git operations
 
-source "$LIB_DIR/utils.sh"
-source "$LIB_DIR/ui.sh"
+# Source removed - already loaded by main executable
 
 GIT_AUTO_COMMIT="${GIT_AUTO_COMMIT:-true}"
 GIT_AUTO_PUSH="${GIT_AUTO_PUSH:-false}"
@@ -816,11 +816,7 @@ VERSION="1.0.0"
 TETHER_LIB="${XDG_CACHE_HOME:-$HOME/.cache}/tether"
 PROJECT_CONFIG=".tether/project.yaml"
 
-source "$LIB_DIR/utils.sh"
-source "$LIB_DIR/ui.sh"
-source "$LIB_DIR/git.sh"
-source "$LIB_DIR/context.sh"
-source "$LIB_DIR/detect.sh"
+# Source removed - already loaded by main executable
 
 # Load project config
 load_config() {
