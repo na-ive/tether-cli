@@ -127,7 +127,8 @@ setup_knowledge_base() {
         echo "  [2] Sync from remote"
         echo "  [3] Replace with new repo"
         echo ""
-        read -p "Choice [1-3]: " choice
+        # FIX: Force read from tty
+        read -p "Choice [1-3]: " choice < /dev/tty
         
         case $choice in
             2)
@@ -140,7 +141,8 @@ setup_knowledge_base() {
                 ;;
             3)
                 log_warn "This will DELETE existing rules!"
-                read -p "Type 'yes' to confirm: " confirm
+                # FIX: Force read from tty
+                read -p "Type 'yes' to confirm: " confirm < /dev/tty
                 [[ "$confirm" != "yes" ]] && return
                 rm -rf "$CACHE_DIR"
                 clone_repo
@@ -164,7 +166,8 @@ clone_repo() {
     echo "  For private rules:"
     echo "     Paste your private repo URL"
     echo ""
-    read -p "Repo URL: " user_input
+    # FIX: Force read from tty
+    read -p "Repo URL: " user_input < /dev/tty
     
     local repo_url="${user_input:-$DEFAULT_STARTER_REPO}"
     
